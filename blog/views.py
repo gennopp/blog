@@ -1,9 +1,26 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from .models import Post, Comment
 from django.utils import timezone
-from .forms import PostForm,CommentForm
+from .forms import PostForm,CommentForm, RegisterForm
+from django.urls import reverse
+
 from django.contrib.auth.decorators import login_required
 
+
+
+def register(response):
+    if response.method == "POST":
+        form = RegisterForm(response.POST)
+
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect(reverse('login'))
+
+    else:
+        form = RegisterForm()
+
+    return render(response, "blog/register.html", {"form": form})
 
 
 def post_list(request):
